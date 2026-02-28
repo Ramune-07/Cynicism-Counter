@@ -113,10 +113,10 @@ async def ranking(interaction: discord.Interaction):
     conn.close()
 
     if not results:
-        await interaction.response.send_message("まだ冷笑家はいません。")
+        await interaction.response.send_message("まだ冷笑はいません。")
         return
 
-    embed = discord.Embed(title="🏆 冷笑家ランキング", color=0x2ecc71)
+    embed = discord.Embed(title="🏆 冷笑ランキング", color=0x2ecc71)
     description = ""
     for i, (u_id, val) in enumerate(results, 1):
         description += f"**{i}位:** <@{u_id}> — `{val}回` \n"
