@@ -19,7 +19,7 @@ DB_FILE = 'cynical.db'
 
 # Lv.2 冷笑判定用正規表現 (お好みでキーワードを増やしてください)
 # r'...' の中に検知したい単語を | で区切って記述します
-CYNICAL_PATTERN = re.compile(r'(どうせ|はいはい|客観的に見て|必死|草$|（笑）|冷める|冷笑|うお|😏|🥶|🥱)')
+CYNICAL_PATTERN = re.compile(r'(どうせ|はいはい|意味あんの|意味ない|必死|草|（笑）|冷める|冷笑|うお|どわー|どわ～|偽善|真面目か|嘲笑|寒い|おつ|乙|勘違い|😏|🥶|🥱)')
 
 class CynicalBot(commands.Bot):
     def __init__(self):
