@@ -101,7 +101,7 @@ async def count(interaction: discord.Interaction, user: discord.Member = None):
         ephemeral=False # みんなに見えるように設定
     )
 
-@bot.tree.command(name="ranking", description="冷笑家ランキングを表示します")
+@bot.tree.command(name="ranking", description="冷笑ランキングを表示します")
 async def ranking(interaction: discord.Interaction):
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
