@@ -14,6 +14,14 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 TARGET_ROLE_ID_STR = os.getenv('TARGET_ROLE_ID')
 TARGET_ROLE_ID = int(TARGET_ROLE_ID_STR) if TARGET_ROLE_ID_STR and TARGET_ROLE_ID_STR.isdigit() else None
 
+# カウント超過時に付与するロールのID (オプション)
+REWARD_ROLE_ID_STR = os.getenv('REWARD_ROLE_ID')
+REWARD_ROLE_ID = int(REWARD_ROLE_ID_STR) if REWARD_ROLE_ID_STR and REWARD_ROLE_ID_STR.isdigit() else None
+
+# ロール付与のカウント閾値 (オプション)
+REWARD_COUNT_THRESHOLD_STR = os.getenv('REWARD_COUNT_THRESHOLD')
+REWARD_COUNT_THRESHOLD = int(REWARD_COUNT_THRESHOLD_STR) if REWARD_COUNT_THRESHOLD_STR and REWARD_COUNT_THRESHOLD_STR.isdigit() else None
+
 # データベースファイル名
 DB_FILE = 'cynical.db'
 
@@ -69,6 +77,23 @@ async def on_message(message):
                      ON CONFLICT(guild_id, user_id) 
                      DO UPDATE SET count = count + 1''', 
                   (message.guild.id, message.author.id))
+
+        # ロール付与判定
+        if REWARD_ROLE_ID and REWARD_COUNT_THRESHOLD:
+            c.execute('SELECT count FROM cynical_counts WHERE guild_id = ? AND user_id = ?',
+                      (message.guild.id, message.author.id))
+            current = c.fetchone()
+            if current and current[0] >= REWARD_COUNT_THRESHOLD:
+                reward_role = message.guild.get_role(REWARD_ROLE_ID)
+                if reward_role and reward_role not in message.author.roles:
+                    try:
+                        await message.author.add_roles(reward_role)
+                        await message.channel.send(
+                            f'🎉 {message.author.mention} の冷笑回数が {REWARD_COUNT_THRESHOLD} 回を超えました！'
+                            f'ロール「{reward_role.name}」が付与されました！')
+                    except discord.Forbidden:
+                        print("ロール付与の権限がありません。")
+
         conn.commit()
         conn.close()
 
